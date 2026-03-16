@@ -6,17 +6,21 @@
     <title>Growth OS</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin:0; padding:0; box-sizing:border-box; }
         :root {
-            --bg: #0a0a0f; --card: #12121a; --card2: #1a1a26; --border: #2a2a3d;
-            --accent: #6c63ff; --accent2: #ff6584; --accent3: #43e97b; --accent4: #f7971e;
-            --text: #e8e8f0; --text2: #8888aa; --microsoft: #00a4ef;
-            --startup: #ff6584; --fitness: #43e97b; --claude: #f7971e;
+            --bg:#0a0a0f; --card:#12121a; --card2:#1a1a26; --border:#2a2a3d;
+            --accent:#6c63ff; --accent2:#ff6584; --accent3:#43e97b; --accent4:#f7971e;
+            --text:#e8e8f0; --text2:#8888aa; --microsoft:#00a4ef;
+            --startup:#ff6584; --fitness:#43e97b; --claude:#f7971e;
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+        /* LOADING */
         .loading-screen { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg); }
         .loading-spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; margin-bottom:16px; }
         @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* LOGIN */
         .login-page { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; }
         .login-logo { font-size:56px; margin-bottom:16px; }
         .login-title { font-size:28px; font-weight:800; margin-bottom:8px; text-align:center; }
@@ -24,18 +28,54 @@
         .login-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:28px; width:100%; max-width:380px; }
         .login-card-title { font-size:16px; font-weight:700; margin-bottom:20px; text-align:center; }
         .google-btn { width:100%; padding:14px; background:white; color:#333; border:none; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; transition:all 0.2s; }
-        .google-btn:hover { background:#f5f5f5; transform:translateY(-1px); }
+        .google-btn:hover { background:#f5f5f5; }
         .divider-row { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
         .divider-line { flex:1; height:1px; background:var(--border); }
         .divider-text { font-size:12px; color:var(--text2); }
-        .input-field { width:100%; background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:12px 14px; color:var(--text); font-size:14px; outline:none; margin-bottom:10px; }
-        .input-field:focus { border-color:var(--accent); }
-        .primary-btn { width:100%; padding:14px; background:var(--accent); color:white; border:none; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; margin-bottom:12px; transition:all 0.2s; }
-        .primary-btn:hover { opacity:0.9; }
-        .toggle-auth { text-align:center; font-size:13px; color:var(--text2); cursor:pointer; }
-        .toggle-auth span { color:var(--accent); font-weight:600; }
         .auth-error { background:rgba(255,101,132,0.15); border:1px solid rgba(255,101,132,0.3); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--accent2); margin-bottom:12px; display:none; }
         .auth-success { background:rgba(67,233,123,0.15); border:1px solid rgba(67,233,123,0.3); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--accent3); margin-bottom:12px; display:none; }
+        .toggle-auth { text-align:center; font-size:13px; color:var(--text2); cursor:pointer; }
+        .toggle-auth span { color:var(--accent); font-weight:600; }
+
+        /* ONBOARDING */
+        .onboarding-page { min-height:100vh; display:flex; flex-direction:column; padding:24px 24px 40px; max-width:480px; margin:0 auto; }
+        .ob-header { padding:20px 0 30px; }
+        .ob-step { font-size:12px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+        .ob-title { font-size:24px; font-weight:800; line-height:1.3; margin-bottom:8px; }
+        .ob-sub { font-size:14px; color:var(--text2); line-height:1.6; }
+        .ob-progress { display:flex; gap:6px; margin-bottom:32px; }
+        .ob-dot { flex:1; height:4px; border-radius:2px; background:var(--border); transition:all 0.3s; }
+        .ob-dot.active { background:var(--accent); }
+        .ob-dot.done { background:var(--accent3); }
+        .ob-content { flex:1; }
+        .ob-label { font-size:13px; color:var(--text2); margin-bottom:8px; font-weight:600; }
+        .ob-input { width:100%; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; color:var(--text); font-size:15px; outline:none; margin-bottom:12px; }
+        .ob-input:focus { border-color:var(--accent); }
+        .ob-options { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+        .ob-option { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; cursor:pointer; display:flex; align-items:center; gap:12px; transition:all 0.2s; }
+        .ob-option:hover { border-color:var(--accent); }
+        .ob-option.selected { border-color:var(--accent); background:rgba(108,99,255,0.1); }
+        .ob-option-icon { font-size:24px; }
+        .ob-option-text { flex:1; }
+        .ob-option-title { font-size:14px; font-weight:600; }
+        .ob-option-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+        .ob-check { width:20px; height:20px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; transition:all 0.2s; }
+        .ob-option.selected .ob-check { background:var(--accent); border-color:var(--accent); color:white; }
+        .ob-footer { padding-top:20px; }
+        .ob-btn { width:100%; padding:16px; background:var(--accent); color:white; border:none; border-radius:14px; font-size:16px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+        .ob-btn:hover { opacity:0.9; transform:translateY(-1px); }
+        .ob-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+        .ob-skip { text-align:center; margin-top:12px; font-size:13px; color:var(--text2); cursor:pointer; }
+        .ob-skip span { color:var(--accent); }
+        .ob-two-col { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+        .ob-small-option { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px; cursor:pointer; text-align:center; transition:all 0.2s; }
+        .ob-small-option:hover { border-color:var(--accent); }
+        .ob-small-option.selected { border-color:var(--accent); background:rgba(108,99,255,0.1); }
+        .ob-small-icon { font-size:28px; margin-bottom:6px; }
+        .ob-small-title { font-size:13px; font-weight:600; }
+        .ob-small-sub { font-size:11px; color:var(--text2); margin-top:2px; }
+
+        /* MAIN APP */
         .app { display:none; }
         .nav { position:fixed; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--border); display:flex; z-index:100; }
         .nav-btn { flex:1; padding:12px 4px 14px; background:none; border:none; color:var(--text2); cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:10px; transition:all 0.2s; }
@@ -84,6 +124,8 @@
         .stat-row:last-child { border-bottom:none; }
         .stat-label { font-size:13px; color:var(--text2); }
         .stat-value { font-size:13px; font-weight:600; }
+        .input-field { width:100%; background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:12px 14px; color:var(--text); font-size:14px; outline:none; margin-bottom:10px; }
+        .input-field:focus { border-color:var(--accent); }
         .input-row { display:flex; gap:8px; margin-top:10px; }
         .input-row .input-field { margin-bottom:0; }
         .btn { background:var(--accent); border:none; border-radius:10px; padding:10px 16px; color:white; font-size:14px; font-weight:600; cursor:pointer; }
@@ -91,7 +133,6 @@
         .alert-icon { font-size:18px; flex-shrink:0; }
         .section-header { font-size:18px; font-weight:700; margin-bottom:4px; margin-top:8px; }
         .section-sub { font-size:13px; color:var(--text2); margin-bottom:16px; }
-        .divider { height:1px; background:var(--border); margin:16px 0; }
         .roadmap-item { display:flex; gap:12px; margin-bottom:16px; }
         .roadmap-line { display:flex; flex-direction:column; align-items:center; }
         .roadmap-dot { width:14px; height:14px; border-radius:50%; flex-shrink:0; margin-top:3px; }
@@ -114,10 +155,9 @@
         .level-badge { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,var(--claude),#ff9a3c); color:white; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; margin-bottom:12px; }
         .user-pill { display:flex; align-items:center; gap:8px; background:var(--card2); border-radius:20px; padding:6px 12px; font-size:12px; color:var(--text2); margin-bottom:12px; }
         .user-avatar { width:24px; height:24px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:11px; color:white; font-weight:700; }
-        .microsoft { color:var(--microsoft); } .startup { color:var(--startup); } .fitness { color:var(--fitness); } .claude { color:var(--claude); } .morning { color:#ffd700; }
-        .bg-microsoft { background:rgba(0,164,239,0.15); } .bg-startup { background:rgba(255,101,132,0.15); } .bg-fitness { background:rgba(67,233,123,0.15); } .bg-claude { background:rgba(247,151,30,0.15); } .bg-morning { background:rgba(255,215,0,0.15); }
-        .dot-microsoft { background:var(--microsoft); } .dot-startup { background:var(--startup); } .dot-fitness { background:var(--fitness); } .dot-claude { background:var(--claude); } .dot-morning { background:#ffd700; }
-        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)} }
+        .microsoft{color:var(--microsoft);} .startup{color:var(--startup);} .fitness{color:var(--fitness);} .claude{color:var(--claude);} .morning{color:#ffd700;}
+        .bg-microsoft{background:rgba(0,164,239,0.15);} .bg-startup{background:rgba(255,101,132,0.15);} .bg-fitness{background:rgba(67,233,123,0.15);} .bg-claude{background:rgba(247,151,30,0.15);} .bg-morning{background:rgba(255,215,0,0.15);}
+        .dot-microsoft{background:var(--microsoft);} .dot-startup{background:var(--startup);} .dot-fitness{background:var(--fitness);} .dot-claude{background:var(--claude);} .dot-morning{background:#ffd700;}
     </style>
 </head>
 <body>
@@ -147,14 +187,32 @@
             Continue with Google
         </button>
         <div class="divider-row">
-            <div class="divider-line"></div>
-            <div class="divider-text">or</div>
-            <div class="divider-line"></div>
+            <div class="divider-line"></div><div class="divider-text">or</div><div class="divider-line"></div>
         </div>
-        <input class="input-field" type="email" id="emailInput" placeholder="Email address">
-        <input class="input-field" type="password" id="passwordInput" placeholder="Password">
-        <button class="primary-btn" id="authBtn" onclick="handleEmailAuth()">Sign In</button>
+        <input class="input-field" type="email" id="emailInput" placeholder="Email address" style="margin-bottom:10px;">
+        <input class="input-field" type="password" id="passwordInput" placeholder="Password" style="margin-bottom:10px;">
+        <button style="width:100%;padding:14px;background:var(--accent);color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:12px;" id="authBtn" onclick="handleEmailAuth()">Sign In</button>
         <div class="toggle-auth" id="toggleAuth" onclick="toggleAuthMode()">Don't have an account? <span>Sign up</span></div>
+    </div>
+</div>
+
+<!-- ONBOARDING -->
+<div class="onboarding-page" id="onboardingPage" style="display:none;">
+    <div class="ob-header">
+        <div class="ob-step" id="obStep">Step 1 of 4</div>
+        <div class="ob-title" id="obTitle">What's your name?</div>
+        <div class="ob-sub" id="obSub">Let's personalize your Growth OS</div>
+    </div>
+    <div class="ob-progress" id="obProgress">
+        <div class="ob-dot active" id="dot0"></div>
+        <div class="ob-dot" id="dot1"></div>
+        <div class="ob-dot" id="dot2"></div>
+        <div class="ob-dot" id="dot3"></div>
+    </div>
+    <div class="ob-content" id="obContent"></div>
+    <div class="ob-footer">
+        <button class="ob-btn" id="obNextBtn" onclick="obNext()">Continue →</button>
+        <div class="ob-skip" id="obSkip" onclick="obSkip()" style="display:none;">Skip for now <span>→</span></div>
     </div>
 </div>
 
@@ -171,11 +229,11 @@
     <!-- TODAY PAGE -->
     <div class="page active" id="page-today">
         <div style="height:12px;"></div>
-        <div class="user-pill" id="userPill">
+        <div class="user-pill">
             <div class="user-avatar" id="userAvatar">?</div>
             <span id="userEmail">Loading...</span>
         </div>
-        <div class="alert" id="currentBlockAlert">
+        <div class="alert">
             <div class="alert-icon">⚡</div>
             <div>
                 <div style="font-weight:600;margin-bottom:2px;" id="currentBlockName">Loading...</div>
@@ -184,50 +242,30 @@
         </div>
         <div class="card">
             <div class="card-title" style="color:var(--accent)">⚡ Today's Non-Negotiables</div>
-            <div class="check-item" onclick="toggleCheck(this,'steps')">
-                <div class="check-box">✓</div><div class="check-text">10,000 steps completed</div>
-                <div class="check-tag bg-fitness fitness">Fitness</div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this,'workout')">
-                <div class="check-box">✓</div><div class="check-text">Morning workout done</div>
-                <div class="check-tag bg-fitness fitness">Fitness</div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this,'meals')">
-                <div class="check-box">✓</div><div class="check-text">Logged meals + calories</div>
-                <div class="check-tag bg-fitness fitness">Fitness</div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this,'impact')">
-                <div class="check-box">✓</div><div class="check-text">Documented impact at Microsoft</div>
-                <div class="check-tag bg-microsoft microsoft">Microsoft</div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this,'standup')">
-                <div class="check-box">✓</div><div class="check-text">Evening StratusPilot standup done</div>
-                <div class="check-tag bg-startup startup">Startup</div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this,'claude')">
-                <div class="check-box">✓</div><div class="check-text">Claude Code practice session</div>
-                <div class="check-tag bg-claude claude">Claude</div>
-            </div>
+            <div class="check-item" onclick="toggleCheck(this,'steps')"><div class="check-box">✓</div><div class="check-text">10,000 steps completed</div><div class="check-tag bg-fitness fitness">Fitness</div></div>
+            <div class="check-item" onclick="toggleCheck(this,'workout')"><div class="check-box">✓</div><div class="check-text">Morning workout done</div><div class="check-tag bg-fitness fitness">Fitness</div></div>
+            <div class="check-item" onclick="toggleCheck(this,'meals')"><div class="check-box">✓</div><div class="check-text">Logged meals + calories</div><div class="check-tag bg-fitness fitness">Fitness</div></div>
+            <div class="check-item" id="careerCheckItem" onclick="toggleCheck(this,'career')"><div class="check-box">✓</div><div class="check-text" id="careerCheckText">Documented impact at work</div><div class="check-tag bg-microsoft microsoft" id="careerCheckTag">Career</div></div>
+            <div class="check-item" id="startupCheckItem" onclick="toggleCheck(this,'standup')"><div class="check-box">✓</div><div class="check-text" id="startupCheckText">Evening startup standup done</div><div class="check-tag bg-startup startup">Startup</div></div>
+            <div class="check-item" onclick="toggleCheck(this,'claude')"><div class="check-box">✓</div><div class="check-text">Claude Code practice session</div><div class="check-tag bg-claude claude">Claude</div></div>
         </div>
         <div class="card">
             <div class="card-title" style="color:var(--text2)">📅 Today's Schedule</div>
             <div class="time-block"><div class="time-label">5:00 AM</div><div class="block-dot dot-morning"></div><div class="block-content"><div class="block-title">Wake Up + Weigh In</div><div class="block-sub">Water, journal 3 lines, set intentions</div><div class="block-tag bg-morning morning">Morning</div></div></div>
             <div class="time-block"><div class="time-label">5:20 AM</div><div class="block-dot dot-fitness"></div><div class="block-content"><div class="block-title" id="workoutTitle">Workout</div><div class="block-sub" id="workoutSub">60 minutes</div><div class="block-tag bg-fitness fitness">Fitness</div></div></div>
-            <div class="time-block"><div class="time-label">6:20 AM</div><div class="block-dot dot-morning"></div><div class="block-content"><div class="block-title">Cold Shower + Breakfast</div><div class="block-sub">30g+ protein. Review Microsoft top 3.</div><div class="block-tag bg-morning morning">Morning</div></div></div>
-            <div class="time-block"><div class="time-label">7:00 AM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Microsoft Deep Work #1</div><div class="block-sub">Most complex work. Zero distractions.</div><div class="block-tag bg-microsoft microsoft">Microsoft</div></div></div>
+            <div class="time-block"><div class="time-label">6:20 AM</div><div class="block-dot dot-morning"></div><div class="block-content"><div class="block-title">Cold Shower + Breakfast</div><div class="block-sub">30g+ protein. Review top 3 priorities.</div><div class="block-tag bg-morning morning">Morning</div></div></div>
+            <div class="time-block"><div class="time-label">7:00 AM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title" id="workBlock1">Deep Work #1</div><div class="block-sub">Most complex work. Zero distractions.</div><div class="block-tag bg-microsoft microsoft" id="workTag1">Work</div></div></div>
             <div class="time-block"><div class="time-label">9:00 AM</div><div class="block-dot dot-fitness"></div><div class="block-content"><div class="block-title">Break + Walk</div><div class="block-sub">~1,500 steps. No screens.</div><div class="block-tag bg-fitness fitness">Steps</div></div></div>
-            <div class="time-block"><div class="time-label">9:15 AM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Microsoft Deep Work #2</div><div class="block-sub">Deliverables, leadership projects</div><div class="block-tag bg-microsoft microsoft">Microsoft</div></div></div>
-            <div class="time-block"><div class="time-label">11:00 AM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Meetings + Collaboration</div><div class="block-sub">Stakeholder time</div><div class="block-tag bg-microsoft microsoft">Microsoft</div></div></div>
+            <div class="time-block"><div class="time-label">9:15 AM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title" id="workBlock2">Deep Work #2</div><div class="block-sub">Deliverables, key projects</div><div class="block-tag bg-microsoft microsoft" id="workTag2">Work</div></div></div>
+            <div class="time-block"><div class="time-label">11:00 AM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Meetings + Collaboration</div><div class="block-sub">Stakeholder time</div><div class="block-tag bg-microsoft microsoft" id="workTag3">Work</div></div></div>
             <div class="time-block"><div class="time-label">11:45 AM</div><div class="block-dot dot-morning"></div><div class="block-content"><div class="block-title">Lunch — Away from Desk</div><div class="block-sub">Real break. Walk ~2,000 steps.</div><div class="block-tag bg-morning morning">Break</div></div></div>
-            <div class="time-block"><div class="time-label">12:30 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Microsoft Deep Work #3</div><div class="block-sub">High visibility projects</div><div class="block-tag bg-microsoft microsoft">Microsoft</div></div></div>
+            <div class="time-block"><div class="time-label">12:30 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title" id="workBlock3">Deep Work #3</div><div class="block-sub">High impact projects</div><div class="block-tag bg-microsoft microsoft" id="workTag4">Work</div></div></div>
             <div class="time-block"><div class="time-label">2:30 PM</div><div class="block-dot dot-fitness"></div><div class="block-content"><div class="block-title">Reset Walk</div><div class="block-sub">~1,500 steps. Recharge.</div><div class="block-tag bg-fitness fitness">Steps</div></div></div>
-            <div class="time-block"><div class="time-label">2:45 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Meetings + Execution</div><div class="block-sub">Team leadership, reviews</div><div class="block-tag bg-microsoft microsoft">Microsoft</div></div></div>
-            <div class="time-block"><div class="time-label">4:30 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Relationship Building</div><div class="block-sub">Coffee chat, sponsor/mentor connect</div><div class="block-tag bg-microsoft microsoft">Microsoft</div></div></div>
-            <div class="time-block"><div class="time-label">5:00 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Skill Building</div><div class="block-sub">Azure, AI, leadership, Partner competencies</div><div class="block-tag bg-microsoft microsoft">Microsoft</div></div></div>
-            <div class="time-block"><div class="time-label">6:00 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Email Batch + Admin</div><div class="block-sub">All emails handled here — not randomly</div><div class="block-tag bg-microsoft microsoft">Microsoft</div></div></div>
-            <div class="time-block"><div class="time-label">6:30 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Microsoft Shutdown Ritual</div><div class="block-sub">Review wins, plan tomorrow, close tabs</div><div class="block-tag bg-microsoft microsoft">Microsoft</div></div></div>
-            <div class="time-block"><div class="time-label">7:00 PM</div><div class="block-dot dot-morning"></div><div class="block-content"><div class="block-title">Dinner + Decompress</div><div class="block-sub">Change clothes. Switch to Founder mode.</div><div class="block-tag bg-morning morning">Transition</div></div></div>
-            <div class="time-block"><div class="time-label">7:30 PM</div><div class="block-dot dot-startup"></div><div class="block-content"><div class="block-title">StratusPilot Standup</div><div class="block-sub">3 questions. 15 mins. Every day.</div><div class="block-tag bg-startup startup">Startup</div></div></div>
+            <div class="time-block"><div class="time-label">2:45 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Meetings + Execution</div><div class="block-sub">Team work, reviews, collaboration</div><div class="block-tag bg-microsoft microsoft" id="workTag5">Work</div></div></div>
+            <div class="time-block"><div class="time-label">6:00 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title">Email Batch + Admin</div><div class="block-sub">All emails here — not randomly</div><div class="block-tag bg-microsoft microsoft" id="workTag6">Work</div></div></div>
+            <div class="time-block"><div class="time-label">6:30 PM</div><div class="block-dot dot-microsoft"></div><div class="block-content"><div class="block-title" id="shutdownTitle">Work Shutdown Ritual</div><div class="block-sub">Review wins, plan tomorrow, close tabs</div><div class="block-tag bg-microsoft microsoft" id="workTag7">Work</div></div></div>
+            <div class="time-block"><div class="time-label">7:00 PM</div><div class="block-dot dot-morning"></div><div class="block-content"><div class="block-title">Dinner + Decompress</div><div class="block-sub">Switch modes mentally.</div><div class="block-tag bg-morning morning">Transition</div></div></div>
+            <div class="time-block"><div class="time-label">7:30 PM</div><div class="block-dot dot-startup"></div><div class="block-content"><div class="block-title" id="standupTitle">Evening Standup</div><div class="block-sub">3 questions. 15 mins. Every day.</div><div class="block-tag bg-startup startup">Startup</div></div></div>
             <div class="time-block"><div class="time-label">7:45 PM</div><div class="block-dot dot-startup"></div><div class="block-content"><div class="block-title" id="eveningTitle">Evening Primary Block</div><div class="block-sub" id="eveningDesc">Discovery or Claude Code</div><div class="block-tag bg-startup startup" id="eveningTag">Tonight</div></div></div>
             <div class="time-block"><div class="time-label">9:25 PM</div><div class="block-dot dot-claude"></div><div class="block-content"><div class="block-title" id="secondaryTitle">Secondary Block</div><div class="block-sub" id="secondaryDesc">Claude Code or Ideation</div><div class="block-tag bg-claude claude" id="secondaryTag">Tonight</div></div></div>
             <div class="time-block"><div class="time-label">10:15 PM</div><div class="block-dot dot-morning"></div><div class="block-content"><div class="block-title">Nightly Shutdown</div><div class="block-sub">Log progress. Screens off 10:30.</div><div class="block-tag bg-morning morning">Wind Down</div></div></div>
@@ -238,25 +276,25 @@
     <div class="page" id="page-goals">
         <div style="height:12px;"></div>
         <div class="section-header">🎯 Your Goals</div>
-        <div class="section-sub">3 tracks. All running in parallel.</div>
+        <div class="section-sub">Your personal tracks.</div>
         <div class="tabs">
             <button class="tab active" onclick="switchTab('goals','fitness',this)">🏋️ Fitness</button>
-            <button class="tab" onclick="switchTab('goals','microsoft',this)">💼 Microsoft</button>
-            <button class="tab" onclick="switchTab('goals','startup',this)">🚀 StratusPilot</button>
-            <button class="tab" onclick="switchTab('goals','claude',this)">💻 Claude Code</button>
+            <button class="tab" onclick="switchTab('goals','career',this)">💼 Career</button>
+            <button class="tab" id="startupTab" onclick="switchTab('goals','startup',this)">🚀 Startup</button>
+            <button class="tab" onclick="switchTab('goals','claude',this)">💻 Claude</button>
         </div>
         <div class="tab-content active" id="goals-fitness">
             <div class="card">
                 <div class="weight-display">
                     <div style="font-size:13px;color:var(--text2);margin-bottom:4px;">CURRENT WEIGHT</div>
                     <div><span class="weight-current" id="currentWeight">--</span><span class="weight-unit"> kg</span></div>
-                    <div class="weight-target">🎯 Target: <span id="targetWeightDisplay">52</span> kg</div>
+                    <div class="weight-target">🎯 Target: <span id="targetWeightDisplay">--</span> kg</div>
                     <div class="weight-left" id="weightLeft">-- kg to go</div>
                 </div>
                 <div class="progress-bar"><div class="progress-fill" id="weightProgress" style="width:0%;background:var(--fitness);"></div></div>
                 <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:6px;">
-                    <span>Start: <span id="startWeightDisplay">58</span> kg</span>
-                    <span>Target: <span id="targetWeightDisplay2">52</span> kg</span>
+                    <span>Start: <span id="startWeightDisplay">--</span> kg</span>
+                    <span>Target: <span id="targetWeightDisplay2">--</span> kg</span>
                 </div>
                 <div class="input-row" style="margin-top:14px;">
                     <input class="input-field" type="number" id="weightInput" placeholder="Log today's weight (kg)" step="0.1">
@@ -279,15 +317,12 @@
                 <div class="stat-row"><div class="stat-label">Calorie Deficit</div><div class="stat-value">400–500 cal/day</div></div>
                 <div class="stat-row"><div class="stat-label">Water</div><div class="stat-value">3L daily</div></div>
                 <div class="stat-row"><div class="stat-label">Eating cutoff</div><div class="stat-value fitness">No food after 8 PM</div></div>
-                <div class="stat-row"><div class="stat-label">Steps Daily</div><div class="stat-value">10,000 steps</div></div>
             </div>
         </div>
-        <div class="tab-content" id="goals-microsoft">
-            <div class="card">
-                <div class="card-title" style="color:var(--microsoft)">🏆 3-Year Partner Roadmap</div>
-                <div class="roadmap-item"><div class="roadmap-line"><div class="roadmap-dot" style="background:var(--microsoft)"></div><div class="roadmap-connector"></div></div><div class="roadmap-content"><div class="roadmap-title">Year 1 — Become the Go-To Person</div><div class="roadmap-sub">Lead a high-visibility project. Find a sponsor. Establish domain expertise.</div></div></div>
-                <div class="roadmap-item"><div class="roadmap-line"><div class="roadmap-dot" style="background:var(--microsoft);opacity:0.6"></div><div class="roadmap-connector"></div></div><div class="roadmap-content"><div class="roadmap-title">Year 2 — Principal-Level Impact</div><div class="roadmap-sub">Drive an org-wide initiative. Start being seen as Partner-ready.</div></div></div>
-                <div class="roadmap-item"><div class="roadmap-line"><div class="roadmap-dot" style="background:var(--microsoft);opacity:0.3"></div></div><div class="roadmap-content"><div class="roadmap-title">Year 3 — Formal Partner Nomination</div><div class="roadmap-sub">Business case built. Sponsor advocates for you. Close the Partner title.</div></div></div>
+        <div class="tab-content" id="goals-career">
+            <div class="card" id="careerRoadmapCard">
+                <div class="card-title" style="color:var(--microsoft)" id="careerRoadmapTitle">🏆 Career Roadmap</div>
+                <div id="careerRoadmapContent"></div>
             </div>
             <div class="card">
                 <div class="card-title" style="color:var(--microsoft)">📅 Weekly Focus Themes</div>
@@ -299,25 +334,15 @@
             </div>
         </div>
         <div class="tab-content" id="goals-startup">
-            <div class="card">
-                <div class="card-title" style="color:var(--startup)">🚀 Path to $5M Funding</div>
-                <div class="phase-card" style="border-color:rgba(255,101,132,0.4);background:rgba(255,101,132,0.05)">
-                    <div class="phase-title" style="color:var(--startup)">📍 NOW — Customer Discovery</div>
-                    <div class="phase-item">3–5 customer interviews per week</div>
-                    <div class="phase-item">Test 3 assumptions per week</div>
-                    <div class="phase-item">Target: 50 quality conversations</div>
-                    <div class="phase-item">Document every insight</div>
-                </div>
-                <div class="phase-card"><div class="phase-title">Phase 1 (Months 1–3): Foundation</div><div class="phase-item">Product-market fit validation</div><div class="phase-item">10 paying customers or LOIs</div><div class="phase-item">Pitch deck built</div></div>
-                <div class="phase-card"><div class="phase-title">Phase 2 (Months 4–8): Traction</div><div class="phase-item">$10–50K MRR</div><div class="phase-item">50 investor contacts</div><div class="phase-item">$500K–1M pre-seed closed</div></div>
-                <div class="phase-card"><div class="phase-title">Phase 3 (Months 9–18): Fundraise</div><div class="phase-item">50+ VC pitch meetings</div><div class="phase-item">Close $5M Series Seed</div></div>
+            <div class="card" id="startupGoalCard">
+                <div class="card-title" style="color:var(--startup)" id="startupGoalTitle">🚀 Startup Journey</div>
+                <div id="startupGoalContent"></div>
             </div>
             <div class="card">
                 <div class="card-title" style="color:var(--startup)">🎙️ Mom Test Rules</div>
                 <div class="stat-row"><div class="stat-label">❌ Never</div><div class="stat-value" style="color:var(--accent2);font-size:12px;">"Would you use this?"</div></div>
                 <div class="stat-row"><div class="stat-label">✅ Ask</div><div class="stat-value" style="color:var(--accent3);font-size:12px;">"Last time you faced this?"</div></div>
                 <div class="stat-row"><div class="stat-label">✅ Ask</div><div class="stat-value" style="color:var(--accent3);font-size:12px;">"How do you solve it now?"</div></div>
-                <div class="stat-row"><div class="stat-label">✅ Ask</div><div class="stat-value" style="color:var(--accent3);font-size:12px;">"Cost of not solving it?"</div></div>
                 <div class="stat-row"><div class="stat-label">⚖️ Ratio</div><div class="stat-value">Listen 80% / Talk 20%</div></div>
             </div>
         </div>
@@ -327,7 +352,7 @@
                 <div class="card-title" style="color:var(--claude)">16-Week Mastery Roadmap</div>
                 <div class="phase-card" style="border-color:rgba(247,151,30,0.4);background:rgba(247,151,30,0.05)"><div class="phase-title" style="color:var(--claude)">Phase 1 — Foundations (Weeks 1–4)</div><div class="phase-item">Week 1: Setup, interface, core commands</div><div class="phase-item">Week 2: Prompt engineering for code</div><div class="phase-item">Week 3: Context management</div><div class="phase-item">Week 4: Debugging and iteration</div></div>
                 <div class="phase-card"><div class="phase-title">Phase 2 — Intermediate (Weeks 5–10)</div><div class="phase-item">Week 5–6: Multi-file projects</div><div class="phase-item">Week 7–8: APIs + automation</div><div class="phase-item">Week 9–10: Complete mini-apps</div></div>
-                <div class="phase-card"><div class="phase-title">Phase 3 — Expert (Weeks 11–16)</div><div class="phase-item">Week 11–12: Agents + complex workflows</div><div class="phase-item">Week 13–14: Build StratusPilot prototype</div><div class="phase-item">Week 15–16: Publish + share expertise</div></div>
+                <div class="phase-card"><div class="phase-title">Phase 3 — Expert (Weeks 11–16)</div><div class="phase-item">Week 11–12: Agents + complex workflows</div><div class="phase-item">Week 13–14: Build your startup prototype</div><div class="phase-item">Week 15–16: Publish + share expertise</div></div>
             </div>
         </div>
     </div>
@@ -338,7 +363,7 @@
         <div class="section-header">📊 Weekly Scorecard</div>
         <div class="section-sub" id="weekLabel">Track your progress.</div>
         <div class="score-grid">
-            <div class="score-card"><div class="score-icon">⚖️</div><div class="score-label">Weight</div><div class="score-value fitness" id="scoreWeight">-- kg</div><div class="score-target">Target: 52 kg</div></div>
+            <div class="score-card"><div class="score-icon">⚖️</div><div class="score-label">Weight</div><div class="score-value fitness" id="scoreWeight">-- kg</div><div class="score-target">Target: <span id="scoreWeightTarget">--</span> kg</div></div>
             <div class="score-card"><div class="score-icon">👟</div><div class="score-label">Steps This Week</div><div class="score-value microsoft" id="scoreSteps">0</div><div class="score-target">Target: 70,000</div><div class="progress-bar"><div class="progress-fill" id="stepsProgress" style="width:0%;background:var(--microsoft)"></div></div></div>
             <div class="score-card"><div class="score-icon">💪</div><div class="score-label">Workouts</div><div class="score-value" id="scoreWorkouts">0/5</div><div class="score-target">Target: 5 sessions</div></div>
             <div class="score-card"><div class="score-icon">🎙️</div><div class="score-label">Interviews</div><div class="score-value startup" id="scoreInterviews">0</div><div class="score-target">Target: 3–5/week</div></div>
@@ -352,13 +377,13 @@
             <div><div style="font-size:12px;color:var(--text2);margin-bottom:6px;">Discovery interviews this week</div><div class="input-row"><input class="input-field" type="number" id="interviewInput" placeholder="e.g. 2"><button class="btn" onclick="logInterviews()">Set</button></div></div>
         </div>
         <div class="card">
-            <div class="card-title" style="color:var(--accent)">🌞 Sunday Review Questions</div>
+            <div class="card-title" style="color:var(--accent)">🌞 Sunday Review</div>
             <div style="font-size:13px;color:var(--text2);line-height:2;">
                 1. Did I hit my 3 non-negotiables every day?<br>
-                2. What moved on StratusPilot this week?<br>
-                3. What moved on my Microsoft Partner track?<br>
+                2. What moved on my startup this week?<br>
+                3. What moved on my career track?<br>
                 4. What's my weight vs last week?<br>
-                5. What ONE thing will I do differently next week?
+                5. What ONE thing will I do differently?
             </div>
         </div>
     </div>
@@ -375,16 +400,16 @@
         <div class="card">
             <div class="card-title" style="color:var(--accent)">🔒 The Architecture Rule</div>
             <div style="font-size:14px;line-height:2;color:var(--text2);">
-                <span style="color:var(--microsoft);font-weight:700;">7 AM – 7 PM</span> → Microsoft ONLY<br>
-                <span style="color:var(--startup);font-weight:700;">7 PM – 10:30 PM</span> → Founder ONLY<br>
+                <span style="color:var(--microsoft);font-weight:700;">7 AM – 7 PM</span> → Work ONLY<br>
+                <span style="color:var(--startup);font-weight:700;">7 PM – 10:30 PM</span> → Founder + Learning<br>
                 <span style="color:var(--fitness);font-weight:700;">5 AM – 7 AM</span> → YOU only
             </div>
         </div>
         <div class="card">
             <div class="card-title" style="color:var(--accent)">🚨 5 Hard Rules</div>
             <div style="display:flex;flex-direction:column;gap:10px;">
-                <div style="background:var(--card2);border-radius:10px;padding:12px;display:flex;gap:10px;"><div style="font-size:20px;">1️⃣</div><div><div style="font-weight:600;font-size:14px;">7 AM = Microsoft starts</div><div style="font-size:12px;color:var(--text2);margin-top:3px;">No StratusPilot thoughts until 7 PM</div></div></div>
-                <div style="background:var(--card2);border-radius:10px;padding:12px;display:flex;gap:10px;"><div style="font-size:20px;">2️⃣</div><div><div style="font-weight:600;font-size:14px;">7 PM = Founder starts</div><div style="font-size:12px;color:var(--text2);margin-top:3px;">No Microsoft Slack until tomorrow</div></div></div>
+                <div style="background:var(--card2);border-radius:10px;padding:12px;display:flex;gap:10px;"><div style="font-size:20px;">1️⃣</div><div><div style="font-weight:600;font-size:14px;">Work starts at 7 AM sharp</div><div style="font-size:12px;color:var(--text2);margin-top:3px;">No startup thoughts until 7 PM</div></div></div>
+                <div style="background:var(--card2);border-radius:10px;padding:12px;display:flex;gap:10px;"><div style="font-size:20px;">2️⃣</div><div><div style="font-weight:600;font-size:14px;">7 PM = Founder mode starts</div><div style="font-size:12px;color:var(--text2);margin-top:3px;">No work messages until tomorrow</div></div></div>
                 <div style="background:var(--card2);border-radius:10px;padding:12px;display:flex;gap:10px;"><div style="font-size:20px;">3️⃣</div><div><div style="font-weight:600;font-size:14px;">Phone away during deep work</div><div style="font-size:12px;color:var(--text2);margin-top:3px;">All deep work = phone in another room</div></div></div>
                 <div style="background:var(--card2);border-radius:10px;padding:12px;display:flex;gap:10px;"><div style="font-size:20px;">4️⃣</div><div><div style="font-weight:600;font-size:14px;">Miss once = fine. Miss twice = investigate.</div><div style="font-size:12px;color:var(--text2);margin-top:3px;">One bad day is human. Two is a pattern.</div></div></div>
                 <div style="background:var(--card2);border-radius:10px;padding:12px;display:flex;gap:10px;"><div style="font-size:20px;">5️⃣</div><div><div style="font-weight:600;font-size:14px;">Sunday planning = non-negotiable</div><div style="font-size:12px;color:var(--text2);margin-top:3px;">20 minutes. Every week. No exceptions.</div></div></div>
@@ -397,7 +422,6 @@
         </div>
     </div>
 
-    <!-- NAV -->
     <nav class="nav">
         <button class="nav-btn active" onclick="switchPage('today',this)"><span class="icon">📅</span><span>Today</span></button>
         <button class="nav-btn" onclick="switchPage('goals',this)"><span class="icon">🎯</span><span>Goals</span></button>
@@ -406,7 +430,7 @@
     </nav>
 </div>
 <script>
-    // ── SUPABASE INIT ──────────────────────────────────
+    // ── SUPABASE ───────────────────────────────────────
     const SUPABASE_URL = 'https://wqudlsrzopwcjdbfkawc.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_YKTdb6KkNVHUKPReRdSmjA_gq2BGp0x';
     const { createClient } = supabase;
@@ -417,38 +441,281 @@
     let todayLog = null;
     let isSignUp = false;
 
-    // ── AUTH INIT ──────────────────────────────────────
+    // ── ONBOARDING STATE ───────────────────────────────
+    let obStep = 0;
+    const obData = {
+        name: '',
+        current_weight: 58,
+        target_weight: 52,
+        career_goal: 'promotion',
+        company: '',
+        has_startup: false,
+        startup_name: '',
+        funding_target: '$5M'
+    };
+
+    const obSteps = [
+        {
+            step: 'Step 1 of 4',
+            title: "What's your name?",
+            sub: "Let's personalize your Growth OS",
+            skip: false,
+            render: () => `
+                <div class="ob-label">Your first name</div>
+                <input class="ob-input" id="ob_name" placeholder="e.g. Priya" value="${obData.name}">
+            `
+        },
+        {
+            step: 'Step 2 of 4',
+            title: "Your fitness goal 💪",
+            sub: "We'll track your progress and build your plan",
+            skip: false,
+            render: () => `
+                <div class="ob-label">Current weight (kg)</div>
+                <input class="ob-input" id="ob_cw" type="number" placeholder="e.g. 58" value="${obData.current_weight}" step="0.1">
+                <div class="ob-label">Target weight (kg)</div>
+                <input class="ob-input" id="ob_tw" type="number" placeholder="e.g. 52" value="${obData.target_weight}" step="0.1">
+            `
+        },
+        {
+            step: 'Step 3 of 4',
+            title: "Your career goal 💼",
+            sub: "What are you working towards?",
+            skip: false,
+            render: () => `
+                <div class="ob-options">
+                    <div class="ob-option ${obData.career_goal === 'promotion' ? 'selected' : ''}" onclick="selectObOption('career_goal','promotion',this)">
+                        <div class="ob-option-icon">🏆</div>
+                        <div class="ob-option-text"><div class="ob-option-title">Get Promoted</div><div class="ob-option-sub">Reach the next level at my company</div></div>
+                        <div class="ob-check">✓</div>
+                    </div>
+                    <div class="ob-option ${obData.career_goal === 'partner' ? 'selected' : ''}" onclick="selectObOption('career_goal','partner',this)">
+                        <div class="ob-option-icon">⭐</div>
+                        <div class="ob-option-text"><div class="ob-option-title">Reach Partner / Principal</div><div class="ob-option-sub">Senior leadership at a top company</div></div>
+                        <div class="ob-check">✓</div>
+                    </div>
+                    <div class="ob-option ${obData.career_goal === 'newjob' ? 'selected' : ''}" onclick="selectObOption('career_goal','newjob',this)">
+                        <div class="ob-option-icon">🚀</div>
+                        <div class="ob-option-text"><div class="ob-option-title">Land a New Job</div><div class="ob-option-sub">Move to a better opportunity</div></div>
+                        <div class="ob-check">✓</div>
+                    </div>
+                    <div class="ob-option ${obData.career_goal === 'fulltime' ? 'selected' : ''}" onclick="selectObOption('career_goal','fulltime',this)">
+                        <div class="ob-option-icon">💡</div>
+                        <div class="ob-option-text"><div class="ob-option-title">Go Full-Time Founder</div><div class="ob-option-sub">Leave job and build my startup</div></div>
+                        <div class="ob-check">✓</div>
+                    </div>
+                </div>
+                <div class="ob-label">Where do you work? (optional)</div>
+                <input class="ob-input" id="ob_company" placeholder="e.g. Microsoft, Google..." value="${obData.company}">
+            `
+        },
+        {
+            step: 'Step 4 of 4',
+            title: "Building a startup? 🚀",
+            sub: "We'll add a founder track to your daily plan",
+            skip: true,
+            render: () => `
+                <div class="ob-two-col" style="margin-bottom:20px;">
+                    <div class="ob-small-option ${obData.has_startup ? 'selected' : ''}" onclick="selectStartup(true,this)">
+                        <div class="ob-small-icon">🚀</div>
+                        <div class="ob-small-title">Yes!</div>
+                        <div class="ob-small-sub">I have a startup</div>
+                    </div>
+                    <div class="ob-small-option ${!obData.has_startup ? 'selected' : ''}" onclick="selectStartup(false,this)">
+                        <div class="ob-small-icon">💼</div>
+                        <div class="ob-small-title">Not yet</div>
+                        <div class="ob-small-sub">Focus on career</div>
+                    </div>
+                </div>
+                <div id="startupFields" style="display:${obData.has_startup ? 'block' : 'none'}">
+                    <div class="ob-label">Startup name</div>
+                    <input class="ob-input" id="ob_startup" placeholder="e.g. StratusPilot" value="${obData.startup_name}">
+                    <div class="ob-label">Funding target</div>
+                    <div class="ob-options">
+                        <div class="ob-option ${obData.funding_target === '$500K' ? 'selected' : ''}" onclick="selectObOption('funding_target','$500K',this)" style="padding:10px 14px;">
+                            <div class="ob-option-text"><div class="ob-option-title">$500K — Pre-seed</div></div><div class="ob-check">✓</div>
+                        </div>
+                        <div class="ob-option ${obData.funding_target === '$2M' ? 'selected' : ''}" onclick="selectObOption('funding_target','$2M',this)" style="padding:10px 14px;">
+                            <div class="ob-option-text"><div class="ob-option-title">$2M — Seed</div></div><div class="ob-check">✓</div>
+                        </div>
+                        <div class="ob-option ${obData.funding_target === '$5M' ? 'selected' : ''}" onclick="selectObOption('funding_target','$5M',this)" style="padding:10px 14px;">
+                            <div class="ob-option-text"><div class="ob-option-title">$5M — Series Seed</div></div><div class="ob-check">✓</div>
+                        </div>
+                        <div class="ob-option ${obData.funding_target === '$10M+' ? 'selected' : ''}" onclick="selectObOption('funding_target','$10M+',this)" style="padding:10px 14px;">
+                            <div class="ob-option-text"><div class="ob-option-title">$10M+ — Series A</div></div><div class="ob-check">✓</div>
+                        </div>
+                    </div>
+                </div>
+            `
+        }
+    ];
+
+    // ── ONBOARDING FUNCTIONS ───────────────────────────
+    function renderObStep() {
+        const s = obSteps[obStep];
+        document.getElementById('obStep').textContent = s.step;
+        document.getElementById('obTitle').textContent = s.title;
+        document.getElementById('obSub').textContent = s.sub;
+        document.getElementById('obContent').innerHTML = s.render();
+        document.getElementById('obSkip').style.display = s.skip ? 'block' : 'none';
+        document.getElementById('obNextBtn').textContent =
+            obStep === obSteps.length - 1 ? '🚀 Launch My Growth OS' : 'Continue →';
+        // Update progress dots
+        obSteps.forEach((_, i) => {
+            const dot = document.getElementById('dot' + i);
+            if (!dot) return;
+            dot.className = 'ob-dot' + (i < obStep ? ' done' : i === obStep ? ' active' : '');
+        });
+    }
+
+    function selectObOption(key, value, el) {
+        obData[key] = value;
+        el.closest('.ob-options').querySelectorAll('.ob-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function selectStartup(val, el) {
+        obData.has_startup = val;
+        document.querySelectorAll('.ob-small-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('startupFields').style.display = val ? 'block' : 'none';
+    }
+
+    function obSkip() { obFinish(); }
+
+    function obNext() {
+        // Save current step data
+        if (obStep === 0) {
+            const name = document.getElementById('ob_name')?.value.trim();
+            if (!name) { alert('Please enter your name'); return; }
+            obData.name = name;
+        }
+        if (obStep === 1) {
+            const cw = parseFloat(document.getElementById('ob_cw')?.value);
+            const tw = parseFloat(document.getElementById('ob_tw')?.value);
+            if (!cw || !tw) { alert('Please enter your weights'); return; }
+            obData.current_weight = cw;
+            obData.target_weight = tw;
+        }
+        if (obStep === 2) {
+            obData.company = document.getElementById('ob_company')?.value.trim() || '';
+        }
+        if (obStep === 3) {
+            if (obData.has_startup) {
+                obData.startup_name = document.getElementById('ob_startup')?.value.trim() || '';
+            }
+            obFinish();
+            return;
+        }
+        obStep++;
+        renderObStep();
+    }
+
+    async function obFinish() {
+        document.getElementById('obNextBtn').textContent = 'Setting up your OS...';
+        document.getElementById('obNextBtn').disabled = true;
+        await sb.from('profiles').upsert({
+            id: currentUser.id,
+            name: obData.name,
+            start_weight: obData.current_weight,
+            current_weight: obData.current_weight,
+            target_weight: obData.target_weight,
+            career_goal: obData.career_goal,
+            company: obData.company || '',
+            has_startup: obData.has_startup,
+            startup_name: obData.startup_name || '',
+            funding_target: obData.funding_target,
+            onboarding_done: true
+        });
+        await loadUserData();
+        showApp();
+    }
+
+    // ── AUTH ───────────────────────────────────────────
     async function initAuth() {
         const { data: { session } } = await sb.auth.getSession();
         if (session?.user) {
             currentUser = session.user;
-            await loadUserData();
-            showApp();
+            await checkOnboarding();
         } else {
             showLogin();
         }
         sb.auth.onAuthStateChange(async (event, session) => {
             if (event === 'SIGNED_IN' && session?.user) {
                 currentUser = session.user;
-                await loadUserData();
-                showApp();
+                await checkOnboarding();
             } else if (event === 'SIGNED_OUT') {
                 currentUser = null;
+                userProfile = null;
+                todayLog = null;
                 showLogin();
             }
         });
     }
 
-    // ── SHOW/HIDE SCREENS ──────────────────────────────
+    async function checkOnboarding() {
+        const { data: profile } = await sb.from('profiles')
+            .select('*').eq('id', currentUser.id).single();
+        if (!profile || !profile.onboarding_done) {
+            // Pre-fill name from Google if available
+            if (currentUser.user_metadata?.full_name) {
+                obData.name = currentUser.user_metadata.full_name.split(' ')[0];
+            }
+            showOnboarding();
+        } else {
+            userProfile = profile;
+            await loadTodayLog();
+            showApp();
+        }
+    }
+
+    async function loadUserData() {
+        const { data: profile } = await sb.from('profiles')
+            .select('*').eq('id', currentUser.id).single();
+        userProfile = profile;
+        await loadTodayLog();
+    }
+
+    async function loadTodayLog() {
+        const today = new Date().toISOString().split('T')[0];
+        let { data: log } = await sb.from('daily_logs')
+            .select('*').eq('user_id', currentUser.id).eq('date', today).single();
+        if (!log) {
+            const { data: newLog } = await sb.from('daily_logs').insert({
+                user_id: currentUser.id,
+                date: today,
+                steps: 0,
+                deep_work_hours: 0,
+                workouts: 0,
+                claude_sessions: 0,
+                interviews: 0
+            }).select().single();
+            log = newLog;
+        }
+        todayLog = log;
+    }
+
+    // ── SHOW SCREENS ───────────────────────────────────
     function showLogin() {
         document.getElementById('loadingScreen').style.display = 'none';
         document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('onboardingPage').style.display = 'none';
         document.getElementById('mainApp').style.display = 'none';
+    }
+
+    function showOnboarding() {
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('onboardingPage').style.display = 'flex';
+        document.getElementById('mainApp').style.display = 'none';
+        obStep = 0;
+        renderObStep();
     }
 
     function showApp() {
         document.getElementById('loadingScreen').style.display = 'none';
         document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('onboardingPage').style.display = 'none';
         document.getElementById('mainApp').style.display = 'block';
         updateDateTime();
         updateCurrentBlock();
@@ -456,7 +723,152 @@
         updateScoreDisplay();
         updateWeekLabel();
         updateUserPill();
+        updateAppForUser();
         loadChecklistState();
+    }
+
+    // ── PERSONALIZE APP FOR USER ───────────────────────
+    function updateAppForUser() {
+        if (!userProfile) return;
+        const p = userProfile;
+        const company = p.company || 'Work';
+        const startupName = p.startup_name || 'Your Startup';
+        const hasStartup = p.has_startup;
+        const careerGoal = p.career_goal;
+        const fundingTarget = p.funding_target || '$5M';
+
+        // Update work labels
+        const workLabel = company || 'Work';
+        ['workTag1','workTag2','workTag3','workTag4','workTag5','workTag6','workTag7'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = workLabel;
+        });
+        ['workBlock1','workBlock2','workBlock3'].forEach((id, i) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = `${workLabel} Deep Work #${i+1}`;
+        });
+        const shutdownEl = document.getElementById('shutdownTitle');
+        if (shutdownEl) shutdownEl.textContent = `${workLabel} Shutdown Ritual`;
+
+        // Career checklist item
+        const careerText = document.getElementById('careerCheckText');
+        const careerTag = document.getElementById('careerCheckTag');
+        if (careerText) careerText.textContent = `Documented impact at ${company || 'work'}`;
+        if (careerTag) careerTag.textContent = company || 'Career';
+
+        // Startup items
+        const startupCheck = document.getElementById('startupCheckText');
+        const standupTitle = document.getElementById('standupTitle');
+        if (startupCheck) startupCheck.textContent = hasStartup
+            ? `${startupName} standup done`
+            : 'Evening reflection done';
+        if (standupTitle) standupTitle.textContent = hasStartup
+            ? `${startupName} Standup`
+            : 'Evening Standup';
+
+        // Hide startup tab if no startup
+        const startupTab = document.getElementById('startupTab');
+        if (startupTab) startupTab.style.display = hasStartup ? 'block' : 'none';
+
+        // Career roadmap
+        buildCareerRoadmap(careerGoal, company);
+
+        // Startup goals
+        if (hasStartup) buildStartupGoals(startupName, fundingTarget);
+
+        // Score weight target
+        const scoreTarget = document.getElementById('scoreWeightTarget');
+        if (scoreTarget) scoreTarget.textContent = p.target_weight || 52;
+
+        // Weight display
+        updateWeightDisplay();
+    }
+
+    function buildCareerRoadmap(goal, company) {
+        const el = document.getElementById('careerRoadmapContent');
+        const title = document.getElementById('careerRoadmapTitle');
+        if (!el) return;
+        const roadmaps = {
+            partner: {
+                title: `🏆 Partner Track — ${company || 'Your Company'}`,
+                items: [
+                    { y:'Year 1', t:'Become the Go-To Person', s:'Lead a high-visibility project. Find a sponsor. Establish domain expertise.' },
+                    { y:'Year 2', t:'Principal-Level Impact', s:'Drive an org-wide initiative. Start being seen as Partner-ready.' },
+                    { y:'Year 3', t:'Formal Partner Nomination', s:'Business case built. Sponsor advocates for you. Close the title.' }
+                ]
+            },
+            promotion: {
+                title: `🏆 Promotion Roadmap — ${company || 'Your Company'}`,
+                items: [
+                    { y:'Now', t:'Build Visibility', s:'Lead a high-impact project. Make sure the right people see your work.' },
+                    { y:'3 Months', t:'Exceed Expectations', s:'Consistently deliver above your level. Document every win.' },
+                    { y:'6 Months', t:'Make Your Case', s:'Have the promotion conversation with your manager. Show the evidence.' }
+                ]
+            },
+            newjob: {
+                title: '🏆 New Job Roadmap',
+                items: [
+                    { y:'Month 1', t:'Define Target Role', s:'Get clear on the exact title, company type and comp you want.' },
+                    { y:'Month 2', t:'Build Pipeline', s:'Apply to 10+ roles. Reach out to 5 people per week.' },
+                    { y:'Month 3', t:'Close the Offer', s:'Negotiate hard. Know your walk-away number.' }
+                ]
+            },
+            fulltime: {
+                title: '🏆 Full-Time Founder Roadmap',
+                items: [
+                    { y:'Now', t:'Validate First', s:'Get 10 paying customers before quitting. De-risk the leap.' },
+                    { y:'3 Months', t:'Build Runway', s:'Save 12 months of expenses. Get first revenue.' },
+                    { y:'6 Months', t:'Make the Jump', s:'Quit with confidence. Full focus on the startup.' }
+                ]
+            }
+        };
+        const r = roadmaps[goal] || roadmaps.promotion;
+        if (title) title.textContent = r.title;
+        el.innerHTML = r.items.map((item, i) => `
+            <div class="roadmap-item">
+                <div class="roadmap-line">
+                    <div class="roadmap-dot" style="background:var(--microsoft);opacity:${1 - i * 0.3}"></div>
+                    ${i < r.items.length - 1 ? '<div class="roadmap-connector"></div>' : ''}
+                </div>
+                <div class="roadmap-content">
+                    <div class="roadmap-title">${item.y} — ${item.t}</div>
+                    <div class="roadmap-sub">${item.s}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function buildStartupGoals(name, target) {
+        const el = document.getElementById('startupGoalContent');
+        const title = document.getElementById('startupGoalTitle');
+        if (!el) return;
+        if (title) title.textContent = `🚀 ${name} — Path to ${target}`;
+        el.innerHTML = `
+            <div class="phase-card" style="border-color:rgba(255,101,132,0.4);background:rgba(255,101,132,0.05)">
+                <div class="phase-title" style="color:var(--startup)">📍 NOW — Customer Discovery</div>
+                <div class="phase-item">3–5 customer interviews per week</div>
+                <div class="phase-item">Test 3 assumptions per week</div>
+                <div class="phase-item">Target: 50 quality conversations</div>
+                <div class="phase-item">Document every insight</div>
+            </div>
+            <div class="phase-card">
+                <div class="phase-title">Phase 1 (Months 1–3): Foundation</div>
+                <div class="phase-item">Product-market fit validation</div>
+                <div class="phase-item">10 paying customers or LOIs</div>
+                <div class="phase-item">Pitch deck built</div>
+            </div>
+            <div class="phase-card">
+                <div class="phase-title">Phase 2 (Months 4–8): Traction</div>
+                <div class="phase-item">First revenue milestone</div>
+                <div class="phase-item">50 investor contacts built</div>
+                <div class="phase-item">Angel round closed</div>
+            </div>
+            <div class="phase-card">
+                <div class="phase-title">Phase 3 (Months 9–18): Fundraise</div>
+                <div class="phase-item">50+ VC pitch meetings</div>
+                <div class="phase-item">Close ${target} funding round</div>
+            </div>
+        `;
     }
 
     // ── GOOGLE SIGN IN ─────────────────────────────────
@@ -476,11 +888,11 @@
         document.getElementById('authBtn').textContent = 'Please wait...';
         if (isSignUp) {
             const { error } = await sb.auth.signUp({ email, password });
-            if (error) { showAuthError(error.message); }
-            else { showAuthSuccessMsg('Check your email to confirm your account!'); }
+            if (error) showAuthError(error.message);
+            else showAuthSuccessMsg('Check your email to confirm your account!');
         } else {
             const { error } = await sb.auth.signInWithPassword({ email, password });
-            if (error) { showAuthError('Invalid email or password'); }
+            if (error) showAuthError('Invalid email or password');
         }
         document.getElementById('authBtn').textContent = isSignUp ? 'Create Account' : 'Sign In';
     }
@@ -492,75 +904,33 @@
         document.getElementById('toggleAuth').innerHTML = isSignUp
             ? 'Already have an account? <span>Sign in</span>'
             : "Don't have an account? <span>Sign up</span>";
-        hideAuthMessages();
+        document.getElementById('authError').style.display = 'none';
+        document.getElementById('authSuccess').style.display = 'none';
     }
 
     function showAuthError(msg) {
         const el = document.getElementById('authError');
-        el.textContent = msg;
-        el.style.display = 'block';
+        el.textContent = msg; el.style.display = 'block';
         document.getElementById('authSuccess').style.display = 'none';
     }
 
     function showAuthSuccessMsg(msg) {
         const el = document.getElementById('authSuccess');
-        el.textContent = msg;
-        el.style.display = 'block';
+        el.textContent = msg; el.style.display = 'block';
         document.getElementById('authError').style.display = 'none';
     }
 
-    function hideAuthMessages() {
-        document.getElementById('authError').style.display = 'none';
-        document.getElementById('authSuccess').style.display = 'none';
-    }
-
-    // ── SIGN OUT ───────────────────────────────────────
     async function signOut() {
         await sb.auth.signOut();
     }
 
-    // ── LOAD USER DATA ─────────────────────────────────
-    async function loadUserData() {
-        let { data: profile } = await sb.from('profiles')
-            .select('*').eq('id', currentUser.id).single();
-        if (!profile) {
-            const { data: newProfile } = await sb.from('profiles').insert({
-                id: currentUser.id,
-                name: currentUser.user_metadata?.full_name || currentUser.email,
-                start_weight: 58,
-                current_weight: 58,
-                target_weight: 52
-            }).select().single();
-            profile = newProfile;
-        }
-        userProfile = profile;
-
-        const today = new Date().toISOString().split('T')[0];
-        let { data: log } = await sb.from('daily_logs')
-            .select('*').eq('user_id', currentUser.id).eq('date', today).single();
-        if (!log) {
-            const { data: newLog } = await sb.from('daily_logs').insert({
-                user_id: currentUser.id,
-                date: today,
-                steps: 0,
-                deep_work_hours: 0,
-                workouts: 0,
-                claude_sessions: 0,
-                interviews: 0
-            }).select().single();
-            log = newLog;
-        }
-        todayLog = log;
-    }
-
     // ── USER PILL ──────────────────────────────────────
     function updateUserPill() {
-        if (!currentUser) return;
-        const email = currentUser.email || '';
-        const name = currentUser.user_metadata?.full_name || email;
+        if (!currentUser || !userProfile) return;
+        const name = userProfile.name || currentUser.email || '';
         const initial = name.charAt(0).toUpperCase();
         document.getElementById('userEmail').textContent =
-            name.length > 25 ? email.split('@')[0] : name;
+            name.length > 25 ? name.substring(0, 25) + '...' : name;
         document.getElementById('userAvatar').textContent = initial;
     }
 
@@ -574,14 +944,10 @@
             .select('*').eq('user_id', currentUser.id)
             .eq('date', today).eq('item_name', key).single();
         if (existing) {
-            await sb.from('checklist_items')
-                .update({ completed }).eq('id', existing.id);
+            await sb.from('checklist_items').update({ completed }).eq('id', existing.id);
         } else {
             await sb.from('checklist_items').insert({
-                user_id: currentUser.id,
-                date: today,
-                item_name: key,
-                completed
+                user_id: currentUser.id, date: today, item_name: key, completed
             });
         }
     }
@@ -599,21 +965,19 @@
                 const key = match[1];
                 const found = items.find(i => i.item_name === key && i.completed);
                 if (found) item.classList.add('done');
+                else item.classList.remove('done');
             }
         });
     }
 
-    // ── WEIGHT LOG ─────────────────────────────────────
+    // ── WEIGHT ─────────────────────────────────────────
     async function logWeight() {
         const val = parseFloat(document.getElementById('weightInput').value);
-        if (!val || val < 30 || val > 200) return;
-        if (!currentUser || !userProfile) return;
-        await sb.from('profiles')
-            .update({ current_weight: val }).eq('id', currentUser.id);
+        if (!val || val < 30 || val > 200 || !userProfile) return;
+        await sb.from('profiles').update({ current_weight: val }).eq('id', currentUser.id);
         userProfile.current_weight = val;
         const today = new Date().toISOString().split('T')[0];
-        await sb.from('daily_logs')
-            .update({ weight: val })
+        await sb.from('daily_logs').update({ weight: val })
             .eq('user_id', currentUser.id).eq('date', today);
         updateWeightDisplay();
         document.getElementById('weightInput').value = '';
@@ -623,7 +987,7 @@
         if (!userProfile) return;
         const start = userProfile.start_weight || 58;
         const target = userProfile.target_weight || 52;
-        const current = userProfile.current_weight || 58;
+        const current = userProfile.current_weight || start;
         const lost = start - current;
         const toGo = current - target;
         const progress = Math.max(0, Math.min(100, (lost / (start - target)) * 100));
@@ -637,42 +1001,37 @@
         document.getElementById('targetWeightDisplay2').textContent = target;
     }
 
-    // ── STEPS LOG ──────────────────────────────────────
+    // ── LOGS ───────────────────────────────────────────
     async function logSteps() {
         const val = parseInt(document.getElementById('stepsInput').value);
-        if (!val || val < 0 || !currentUser || !todayLog) return;
+        if (!val || val < 0 || !todayLog) return;
         const newSteps = (todayLog.steps || 0) + val;
-        await sb.from('daily_logs')
-            .update({ steps: newSteps }).eq('id', todayLog.id);
+        await sb.from('daily_logs').update({ steps: newSteps }).eq('id', todayLog.id);
         todayLog.steps = newSteps;
         updateScoreDisplay();
         document.getElementById('stepsInput').value = '';
     }
 
-    // ── DEEP WORK LOG ──────────────────────────────────
     async function logDeepWork() {
         const val = parseFloat(document.getElementById('deepWorkInput').value);
-        if (!val || val < 0 || !currentUser || !todayLog) return;
+        if (!val || val < 0 || !todayLog) return;
         const newHours = (todayLog.deep_work_hours || 0) + val;
-        await sb.from('daily_logs')
-            .update({ deep_work_hours: newHours }).eq('id', todayLog.id);
+        await sb.from('daily_logs').update({ deep_work_hours: newHours }).eq('id', todayLog.id);
         todayLog.deep_work_hours = newHours;
         updateScoreDisplay();
         document.getElementById('deepWorkInput').value = '';
     }
 
-    // ── INTERVIEWS LOG ─────────────────────────────────
     async function logInterviews() {
         const val = parseInt(document.getElementById('interviewInput').value);
-        if (val === undefined || val < 0 || !currentUser || !todayLog) return;
-        await sb.from('daily_logs')
-            .update({ interviews: val }).eq('id', todayLog.id);
+        if (val === undefined || val < 0 || !todayLog) return;
+        await sb.from('daily_logs').update({ interviews: val }).eq('id', todayLog.id);
         todayLog.interviews = val;
         updateScoreDisplay();
         document.getElementById('interviewInput').value = '';
     }
 
-    // ── WEEKLY SCORE ───────────────────────────────────
+    // ── SCORE ──────────────────────────────────────────
     async function updateScoreDisplay() {
         if (!currentUser) return;
         const now = new Date();
@@ -685,14 +1044,14 @@
             .select('*').eq('user_id', currentUser.id).gte('date', mondayStr);
         if (weekLogs && weekLogs.length > 0) {
             const totalSteps = weekLogs.reduce((a, b) => a + (b.steps || 0), 0);
-            const totalDeepWork = weekLogs.reduce((a, b) => a + (b.deep_work_hours || 0), 0);
+            const totalDW = weekLogs.reduce((a, b) => a + (b.deep_work_hours || 0), 0);
             const totalWorkouts = weekLogs.reduce((a, b) => a + (b.workouts || 0), 0);
             const totalClaude = weekLogs.reduce((a, b) => a + (b.claude_sessions || 0), 0);
             const latestInterviews = weekLogs[weekLogs.length - 1].interviews || 0;
             document.getElementById('scoreSteps').textContent = totalSteps.toLocaleString();
             document.getElementById('stepsProgress').style.width =
                 Math.min(100, (totalSteps / 70000) * 100) + '%';
-            document.getElementById('scoreDeepWork').textContent = totalDeepWork + ' hrs';
+            document.getElementById('scoreDeepWork').textContent = totalDW + ' hrs';
             document.getElementById('scoreWorkouts').textContent = totalWorkouts + '/5';
             document.getElementById('scoreClaude').textContent = totalClaude + '/5';
             document.getElementById('scoreInterviews').textContent = latestInterviews;
@@ -723,7 +1082,7 @@
         document.getElementById('dateText').textContent =
             `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
         const hour = now.getHours();
-        const name = currentUser?.user_metadata?.full_name?.split(' ')[0] || '';
+        const name = userProfile?.name?.split(' ')[0] || '';
         const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
         document.getElementById('greeting').textContent =
             `${greet}${name ? ', ' + name : ''} 👋`;
@@ -731,30 +1090,27 @@
 
     // ── CURRENT BLOCK ──────────────────────────────────
     function getCurrentBlock() {
-        const now = new Date();
-        const t = now.getHours() * 60 + now.getMinutes();
+        const t = new Date().getHours() * 60 + new Date().getMinutes();
         const blocks = [
             { start:0,    end:300,  name:'😴 Sleep Time',             desc:'Rest and recover. Wake up at 5:00 AM.' },
             { start:300,  end:320,  name:'🌅 Wake Up + Weigh In',      desc:'Drink water, weigh yourself, write 3-line journal.' },
             { start:320,  end:380,  name:'🏋️ Workout Time',            desc:'60 minutes. Per your daily split.' },
             { start:380,  end:420,  name:'🚿 Shower + Breakfast',      desc:'Cold shower, 30g+ protein, review top 3.' },
-            { start:420,  end:540,  name:'💼 Microsoft Deep Work #1',  desc:'Most complex work. Zero distractions.' },
+            { start:420,  end:540,  name:'💼 Deep Work #1',            desc:'Most complex work. Zero distractions.' },
             { start:540,  end:555,  name:'🚶 Break + Walk',            desc:'~1,500 steps. No screens.' },
-            { start:555,  end:660,  name:'💼 Microsoft Deep Work #2',  desc:'Deliverables and leadership projects.' },
-            { start:660,  end:705,  name:'🤝 Meetings',                desc:'Stakeholder time at Microsoft.' },
+            { start:555,  end:660,  name:'💼 Deep Work #2',            desc:'Deliverables and key projects.' },
+            { start:660,  end:705,  name:'🤝 Meetings',                desc:'Stakeholder and collaboration time.' },
             { start:705,  end:750,  name:'🍽️ Lunch',                  desc:'Away from desk. Walk ~2,000 steps.' },
-            { start:750,  end:870,  name:'💼 Microsoft Deep Work #3',  desc:'High visibility projects.' },
+            { start:750,  end:870,  name:'💼 Deep Work #3',            desc:'High impact projects.' },
             { start:870,  end:885,  name:'🚶 Reset Walk',              desc:'~1,500 steps. Reset your brain.' },
-            { start:885,  end:990,  name:'🤝 Meetings + Execution',    desc:'Team leadership, reviews.' },
-            { start:990,  end:1020, name:'🌐 Relationship Building',   desc:'Coffee chat, sponsor/mentor.' },
-            { start:1020, end:1080, name:'📚 Skill Building',          desc:'Azure, AI, leadership, Partner track.' },
+            { start:885,  end:1080, name:'🤝 Meetings + Execution',    desc:'Team work, reviews, collaboration.' },
             { start:1080, end:1110, name:'📧 Email Batch',             desc:'Handle all emails here — not randomly.' },
-            { start:1110, end:1140, name:'✅ Microsoft Shutdown',      desc:'Review wins. Plan tomorrow. Close tabs.' },
-            { start:1140, end:1170, name:'🍽️ Dinner + Decompress',    desc:'Switch to Founder mode mentally.' },
-            { start:1170, end:1185, name:'🚀 StratusPilot Standup',   desc:'Answer your 3 daily questions.' },
+            { start:1110, end:1140, name:'✅ Work Shutdown',           desc:'Review wins. Plan tomorrow. Close tabs.' },
+            { start:1140, end:1170, name:'🍽️ Dinner + Decompress',    desc:'Switch modes mentally.' },
+            { start:1170, end:1185, name:'🚀 Evening Standup',         desc:'Answer your 3 daily questions.' },
             { start:1185, end:1285, name:'🔍 Evening Primary Block',   desc:'Customer Discovery or Claude Code.' },
             { start:1285, end:1295, name:'🧘 Evening Break',           desc:'Walk, stretch, reset.' },
-            { start:1295, end:1335, name:'💻 Evening Secondary Block', desc:'Claude Code or StratusPilot ideation.' },
+            { start:1295, end:1335, name:'💻 Evening Secondary Block', desc:'Claude Code or ideation.' },
             { start:1335, end:1350, name:'📓 Nightly Shutdown',        desc:'Log progress. Screens off at 10:30.' },
             { start:1350, end:1440, name:'😴 Sleep',                   desc:'Protect your recovery. 5 AM comes fast.' },
         ];
@@ -776,11 +1132,11 @@
         const schedule = {
             0: { primary:'🗓️ Weekly Planning', primaryDesc:'Review week, plan ahead', primaryTag:'Planning', secondary:'💻 Light Claude Code or Rest', secondaryDesc:'Optional', secondaryTag:'Rest' },
             1: { primary:'🔍 Customer Discovery', primaryDesc:'Conduct interviews, test assumptions', primaryTag:'Startup', secondary:'💻 Claude Code Learning', secondaryDesc:'Foundations — 45 mins hands-on', secondaryTag:'Claude' },
-            2: { primary:'💻 Claude Code — Deep Learning', primaryDesc:'Build something real', primaryTag:'Claude', secondary:'📓 StratusPilot Ideation', secondaryDesc:'Write insights, hypotheses', secondaryTag:'Startup' },
+            2: { primary:'💻 Claude Code — Deep Learning', primaryDesc:'Build something real', primaryTag:'Claude', secondary:'📓 Startup Ideation', secondaryDesc:'Write insights, hypotheses', secondaryTag:'Startup' },
             3: { primary:'🔍 Customer Discovery', primaryDesc:'Interviews + assumption testing', primaryTag:'Startup', secondary:'💻 Claude Code Practice', secondaryDesc:'Apply what you learned', secondaryTag:'Claude' },
-            4: { primary:'💻 Claude Code — Build', primaryDesc:'Build a real mini-project', primaryTag:'Claude', secondary:'🚀 StratusPilot Synthesis', secondaryDesc:'Synthesize insights from the week', secondaryTag:'Startup' },
-            5: { primary:'📊 StratusPilot Weekly Review', primaryDesc:'What moved? What next?', primaryTag:'Startup', secondary:'💻 Claude Code Project', secondaryDesc:'Apply to StratusPilot use case', secondaryTag:'Claude' },
-            6: { primary:'💻 Claude Code — Extended 2hrs', primaryDesc:'Deeper build session', primaryTag:'Claude', secondary:'🌐 Competitive Research', secondaryDesc:'Market landscape mapping', secondaryTag:'Startup' },
+            4: { primary:'💻 Claude Code — Build', primaryDesc:'Build a real mini-project', primaryTag:'Claude', secondary:'🚀 Startup Synthesis', secondaryDesc:'Synthesize insights from the week', secondaryTag:'Startup' },
+            5: { primary:'📊 Startup Weekly Review', primaryDesc:'What moved? What next?', primaryTag:'Startup', secondary:'💻 Claude Code Project', secondaryDesc:'Apply to your startup use case', secondaryTag:'Claude' },
+            6: { primary:'💻 Claude Code — Extended', primaryDesc:'2 hour deep session', primaryTag:'Claude', secondary:'🌐 Competitive Research', secondaryDesc:'Market landscape mapping', secondaryTag:'Startup' },
         };
         const s = schedule[day];
         document.getElementById('eveningTitle').textContent = s.primary;
@@ -792,8 +1148,7 @@
         const workouts = {
             1:'Upper Body Strength', 2:'HIIT + Cardio',
             3:'Lower Body Strength', 4:'HIIT + Cardio',
-            5:'Full Body Strength',  6:'Long Walk / Yoga',
-            0:'Rest + Meal Prep'
+            5:'Full Body Strength',  6:'Long Walk / Yoga', 0:'Rest + Meal Prep'
         };
         document.getElementById('workoutTitle').textContent = workouts[day];
         document.getElementById('workoutSub').textContent = day === 0 ? 'Active recovery' : '60 minutes';
@@ -808,8 +1163,8 @@
         monday.setDate(diff);
         const sunday = new Date(monday);
         sunday.setDate(monday.getDate() + 6);
-        const fmt = (d) => `${d.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun',
-            'Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}`;
+        const fmt = (d) => `${d.getDate()} ${['Jan','Feb','Mar','Apr','May',
+            'Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}`;
         document.getElementById('weekLabel').textContent =
             `Week of ${fmt(monday)} – ${fmt(sunday)}`;
     }
